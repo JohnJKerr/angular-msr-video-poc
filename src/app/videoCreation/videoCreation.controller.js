@@ -1,19 +1,23 @@
 export default class VideoCreationController {
-	constructor (userMedia, recorder) {
+  constructor(userMedia, recorder) {
     'ngInject';
 
-		this.userMedia = userMedia;
+    this.userMedia = userMedia;
     this.recorder = recorder;
+    this.stream = null;
 
-		this.activate();
+    this.activate();
   }
 
-	activate() {
-		this.stream = this.userMedia.init();
-	}
+  activate() {
+    this.userMedia.init()
+      .then((stream) => {
+        this.stream = stream;
+      });
+  }
 
-	record() {
-		this.recorder.init(this.stream);
-		return this.recorder.record();
-	}
+  record() {
+    this.recorder.init(this.stream);
+    return this.recorder.record();
+  }
 }

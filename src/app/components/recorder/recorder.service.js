@@ -21,9 +21,9 @@ export default class RecorderService {
 		};
 
 		this.recorder = getRecorder(stream);
-  };
+  }
 
-  record(stream) {
+  record() {
 		if(!this.recorder)
 			throw new Error("Recorder must be initialised using init");
 

@@ -22,6 +22,20 @@ describe('user media service', () => {
 		}));
 	});
 
+	describe('mediaProvider property', () => {
+		it('should be defined', inject(userMedia => {
+			// assert
+			expect(userMedia.mediaProvider).toBeTruthy();
+		}));
+	});
+
+	describe('$q property', () => {
+		it('should be defined', inject(userMedia => {
+			// assert
+			expect(userMedia.$q).toBeTruthy();
+		}));
+	});
+
 	describe('init method', () => {
 		let mediaProvider = new class {
 			constructor() {
@@ -48,25 +62,36 @@ describe('user media service', () => {
 			expect(userMedia.init).toBeTruthy();
 		}));
 
-		it("should throw when can't get media", inject(userMedia => {
+		it("should reject with error when can't get media", inject((userMedia, $rootScope) => {
 			// arrange
 			mediaProvider.isError = true;
 			userMedia.mediaProvider = mediaProvider;
 
 			// act/assert
-			expect(() => { userMedia.init(); }).toThrow(jasmine.any(Error));
+			expect(() => {
+				userMedia.init()
+					.catch((e) => {
+						throw e;
+					});
+					$rootScope.$digest();
+				}).toThrow(jasmine.any(Error));
 		}));
 
-		it("should return stream when it succeeds", inject(userMedia => {
+		it("should resolve with stream when it succeeds", inject((userMedia, $rootScope) => {
 			// arrange
 			mediaProvider.isSuccess = true;
 			userMedia.mediaProvider = mediaProvider;
+			let getStream;
 
 			// act
-			let stream = userMedia.init();
+			userMedia.init()
+				.then((stream) => {
+					getStream = stream;
+				});
 
 			// assert
-			expect(stream.stream).toEqual('stream');
+			$rootScope.$digest();
+			expect(getStream.stream).toEqual('stream');
 		}));
 	});
 });

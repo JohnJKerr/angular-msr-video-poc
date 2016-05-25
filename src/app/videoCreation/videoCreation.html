@@ -1,7 +1,5 @@
 <button type="button" ng-click="videoCreation.record()">Record</button>
-<video>
-	<source src="{{videoCreation.userMedia.stream}}" type="video/webm" />
-</video>
+<video id="video-player" stream-player stream="videoCreation.stream"></video>
 <div ng-repeat="recording in videoCreation.recorder.recordings">
 	<p>{{recording}}</p>
 </div>
