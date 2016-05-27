@@ -26,6 +26,6 @@ export default class VideoCreationController {
   setStreamUri(mediaStream) {
 		//todo: remove leaky URI abstraction
     if (!(this.streamUri))
-      this.streamUri = URI.createObjectURL(mediaStream);
+      this.streamUri = URL.createObjectURL(mediaStream);
   }
 }
