@@ -4,20 +4,28 @@ export default class VideoCreationController {
 
     this.userMedia = userMedia;
     this.recorder = recorder;
-    this.stream = null;
-
-    this.activate();
-  }
-
-  activate() {
-    this.userMedia.init()
-      .then((stream) => {
-        this.stream = stream;
-      });
+    this.streamUri = null;
   }
 
   record() {
-    this.recorder.init(this.stream);
-    return this.recorder.record();
+    this.userMedia.init()
+      .then((mediaStream) => {
+				this.setStreamUri(mediaStream);
+        this.recorder.init(mediaStream);
+        this.recorder.record();
+      })
+      .catch((error) => {
+        throw error;
+      });
+  }
+
+	stop() {
+		this.recorder.stop();
+	}
+
+  setStreamUri(mediaStream) {
+		//todo: remove leaky URI abstraction
+    if (!(this.streamUri))
+      this.streamUri = URI.createObjectURL(mediaStream);
   }
 }

@@ -1,27 +1,15 @@
 export default class UserMediaService {
-  constructor($q) {
+  constructor(getUserMedia) {
     'ngInject';
 
     this.config = {
       audio: true,
       video: true
     };
-    //todo: remove leaky abstraction
-    this.mediaProvider = navigator;
-		this.$q = $q;
+    this.mediaProvider = getUserMedia;
   }
 
-  init() {
-    return this.$q((resolve, reject) => {
-      let onSuccess = (mediaStream) => {
-        resolve(mediaStream);
-      }
-
-      let onError = (e) => {
-        reject(e);
-      }
-
-      this.mediaProvider.getUserMedia(this.config, onSuccess, onError);
-    });
-  }
+	init() {
+		return this.mediaProvider.getUserMedia(this.config);
+	}
 }

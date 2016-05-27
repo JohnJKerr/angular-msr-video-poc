@@ -50,19 +50,6 @@ describe('recorder service', () => {
 				// assert
 				expect(recorder.recorder.ondataavailable).toBeTruthy();
 			}));
-
-			//todo: leaky abstraction currently preventing this test
-			// it('should push blob to the recordings collection', () => {
-			// 	// arrange
-			// 	recorder.recordings = [];
-			// 	recorder.init({});
-			// 	let blob = {
-			// 		uri: 'localhost/blobs/blob.jpg'
-			// 	};
-			//
-			// 	// act
-			// 	recorder.recorder.ondataavailable();
-			// });
 		});
 	});
 
@@ -71,7 +58,7 @@ describe('recorder service', () => {
 			expect(recorder.record).toBeTruthy();
 		}));
 
-		it('should throw when not intialised', inject((recorder) => {
+		it('should error when not intialised', inject((recorder) => {
 			// arrange
 			recorder.recorder = null;
 
@@ -81,16 +68,55 @@ describe('recorder service', () => {
 
 		it('should start recording', inject((recorder) => {
 			// arrange
-			let mediaStreamRecorder = {
-				start: jasmine.createSpy('start')
-			};
-			recorder.recorder = mediaStreamRecorder;
+			recorder.init({});
+			spyOn(recorder.recorder, 'start');
+
 
 			// act
 			recorder.record();
 
 			// assert
-			expect(mediaStreamRecorder.start).toHaveBeenCalled();
+			expect(recorder.recorder.start).toHaveBeenCalled();
+		}));
+	});
+
+	describe('stop function', () => {
+		it('should exist', inject(recorder => {
+			expect(recorder.stop).toBeTruthy();
+		}));
+
+		it('should call recorder stop', inject(recorder => {
+			// arrange
+			recorder.init({});
+			spyOn(recorder.recorder, 'stop');
+
+			// act
+			recorder.stop();
+
+			// assert
+			expect(recorder.recorder.stop).toHaveBeenCalled();
+		}));
+
+		it('should error when not recording', inject(recorder => {
+			// act/assert
+			expect(() => { recorder.stop(); }).toThrow(jasmine.any(Error));
+		}));
+	});
+
+	describe('addRecording function', () => {
+		it('should exist', inject(recorder => {
+			expect(recorder.addRecording).toBeTruthy();
+		}));
+
+		it('should push to recordings collection', inject(recorder => {
+			// arrange
+			let recordingsCount = recorder.recordings.length;
+
+			// act
+			recorder.addRecording('blobUrl');
+
+			// arrange
+			expect(recorder.recordings.length).toEqual(recordingsCount + 1);
 		}));
 	});
 });

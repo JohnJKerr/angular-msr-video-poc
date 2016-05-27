@@ -1,5 +1,6 @@
 <button type="button" ng-click="videoCreation.record()">Record</button>
-<video id="video-player" stream-player stream="videoCreation.stream"></video>
+<button type="button" ng-click="videoCreation.stop()">Stop</button>
+<video id="video-player" stream-player stream-uri="videoCreation.streamUri"></video>
 <div ng-repeat="recording in videoCreation.recorder.recordings">
 	<p>{{recording}}</p>
 </div>

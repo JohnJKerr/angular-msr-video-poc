@@ -2,19 +2,21 @@ describe('streamPlayer directive', () => {
   let vm;
   let element;
   let scope;
-  let stream = {
-    stream: 'stream'
-  };
+	let streamUri = 'blob:uri';
+	let playSpy;
 
   beforeEach(angular.mock.module('angularMsrVideoPoc'));
 
   beforeEach(inject(($compile, $rootScope) => {
     scope = $rootScope.$new();
-    scope.stream = stream;
+    scope.streamUri = streamUri;
 
     element = angular.element(`
-      <video stream-player stream="stream"></video>
+      <video stream-player stream-uri="streamUri"></video>
     `);
+
+		playSpy = jasmine.createSpy('play');
+		element[0].play = playSpy;
 
     $compile(element)(scope);
     $rootScope.$digest();
@@ -22,23 +24,29 @@ describe('streamPlayer directive', () => {
   }));
 
   it('should be compiled', () => {
+		// assert
     expect(element.html()).not.toEqual(null);
   });
 
   it('should have isolate scope', () => {
+		// assert
     expect(vm).toEqual(jasmine.any(Object));
   });
 
-  describe('stream property', () => {
+  describe('streamUri property', () => {
     it('should exist', () => {
-      expect(vm.stream).toEqual(stream);
+			// assert
+      expect(vm.streamUri).toBeTruthy();
     });
-  });
 
-  //todo: figure out how to test this
-  // describe('element', () => {
-  //   it('should have srcObject set to stream', () => {
-  //     expect(element.srcObject).toEqual(vm.stream);
-  //   });
-  // });
+		it('should call play on underlying element', () => {
+			// assert
+			expect(playSpy).toHaveBeenCalled();
+		});
+
+		it('should sync with src attr on element', () => {
+			// assert
+			expect(element.attr('src')).toEqual(streamUri);
+		});
+  });
 });

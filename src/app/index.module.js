@@ -12,6 +12,7 @@ import VideoCreationController from './videoCreation/videoCreation.controller';
 import RecorderService from '../app/components/recorder/recorder.service';
 import UserMediaService from '../app/components/userMedia/userMedia.service';
 import StreamPlayerDirective from '../app/components/streamPlayer/streamPlayer.directive';
+import GetUserMediaService from '../app/components/getUserMedia/getUserMedia.service';
 
 angular.module('angularMsrVideoPoc', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'ngMessages', 'ngAria', 'ngRoute', 'toastr'])
   .constant('malarkey', malarkey)
@@ -23,6 +24,7 @@ angular.module('angularMsrVideoPoc', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSa
   .service('webDevTec', WebDevTecService)
 	.service('recorder', RecorderService)
 	.service('userMedia', UserMediaService)
+	.service('getUserMedia', GetUserMediaService)
   .controller('MainController', MainController)
 	.controller('VideoCreationController', VideoCreationController)
   .directive('acmeNavbar', NavbarDirective)

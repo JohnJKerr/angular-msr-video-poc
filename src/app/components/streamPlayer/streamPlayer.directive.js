@@ -4,10 +4,15 @@ export default function StreamPlayerDirective() {
   let directive = {
     restrict: 'A',
     scope: {
-        stream: '='
+      streamUri: '='
     },
     link: ($scope, element) => {
-      element.srcObject = $scope.stream;
+      $scope.$watch('streamUri', () => {
+        if ($scope.streamUri) {
+          element[0].setAttribute('src', $scope.streamUri);
+          element[0].play();
+        }
+      });
     }
   };
 
