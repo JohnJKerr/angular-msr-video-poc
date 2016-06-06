@@ -1,7 +1,8 @@
 export default class VideoCreationController {
-  constructor(userMedia, recorder) {
+  constructor(userMedia, recorder, $sce) {
     'ngInject';
-
+    
+    this.$sce = $sce;
     this.userMedia = userMedia;
     this.recorder = recorder;
     this.streamUri = null;

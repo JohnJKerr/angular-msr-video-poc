@@ -2,11 +2,13 @@
 import MediaStreamRecorder from 'msr';
 
 export default class RecorderService {
-  constructor() {
+  constructor($http) {
     'ngInject';
-
+		this.$http = $http;
 		this.recordings = [];
     this.recorder = null;
+		this.videoStartTime = Date.now();
+		this.videoSegmentIndex = 0;
   }
 
   init(stream) {
@@ -15,10 +17,29 @@ export default class RecorderService {
 
 			let recorder = new MediaStreamRecorder(stream);
 			recorder.mimeType = "video/webm";
+			
 			recorder.ondataavailable = (blob) => {
-				var blobUrl = URL.createObjectURL(blob);
-				self.addRecording(blobUrl);
+				self.videoSegmentIndex += 1;
+				var formData = new FormData();
+				let filename = self.videoStartTime + '-video' + self.videoSegmentIndex +'.webm';
+				formData.append('filename', filename);
+				formData.append('video', blob);
+
+				self.$http({
+					method: 'POST',
+					url: 'http://localhost:59161/video',
+					headers: {
+						'Content-Type': undefined
+					},
+					data: formData
+				}).then(() => {
+					self.addRecording(filename);
+				}, () => {
+					self.addRecording(filename);
+				});
+				
 			};
+			
 			return recorder;
 		};
 
@@ -29,7 +50,7 @@ export default class RecorderService {
 		if(!this.recorder)
 			throw new Error("Recorder must be initialised using init");
 
-    this.recorder.start(3000);
+    this.recorder.start(2000);
   }
 
 	stop() {

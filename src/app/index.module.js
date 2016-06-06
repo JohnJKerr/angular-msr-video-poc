@@ -29,4 +29,9 @@ angular.module('angularMsrVideoPoc', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSa
 	.controller('VideoCreationController', VideoCreationController)
   .directive('acmeNavbar', NavbarDirective)
   .directive('acmeMalarkey', MalarkeyDirective)
-  .directive('streamPlayer', StreamPlayerDirective);
+  .directive('streamPlayer', StreamPlayerDirective)
+  .filter('videoUrl', function ($sce) {
+    return function(filename) {
+      return $sce.trustAsResourceUrl('http://localhost:59161/uploads/' + filename);
+    };
+  });
