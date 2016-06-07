@@ -17,6 +17,11 @@ export default class RecorderService {
 
 			let recorder = new MediaStreamRecorder(stream);
 			recorder.mimeType = "video/webm";
+			recorder.audioChannels = 1;
+			recorder.clearOldRecordedFrames();
+			recorder.onStartedDrawingNonBlankFrames = () => {
+				recorder.clearOldRecordedFrames();
+			}
 			
 			recorder.ondataavailable = (blob) => {
 				self.videoSegmentIndex += 1;
@@ -35,7 +40,7 @@ export default class RecorderService {
 				}).then(() => {
 					self.addRecording(filename);
 				}, () => {
-					self.addRecording(filename);
+					console.log("error");
 				});
 				
 			};

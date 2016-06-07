@@ -27,6 +27,11 @@ namespace Backend
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddMvc();
+			services.AddCors();
+			services.ConfigureCors(options => options.AddPolicy("AllowAll", 
+				p => p.AllowAnyOrigin()
+					.AllowAnyMethod()
+					.AllowAnyHeader()));
 			// Uncomment the following line to add Web API services which makes it easier to port Web API 2 controllers.
 			// You will also need to add the Microsoft.AspNet.Mvc.WebApiCompatShim package to the 'dependencies' section of project.json.
 			// services.AddWebApiConventions();
