@@ -38,7 +38,7 @@ export default class RecorderService {
 					},
 					data: formData
 				}).then(() => {
-					self.addRecording(filename);
+					// success
 				}, () => {
 					console.log("error");
 				});
@@ -58,10 +58,19 @@ export default class RecorderService {
   }
 
 	stop() {
+		let self = this;
 		if(!this.recorder)
 			throw new Error("Recorder must be recording before it can be stopped");
-
+		
 		this.saveRecording = false;
+		this.$http({
+			method: 'POST',
+			url: 'http://localhost:59161/video/endvideo/' + self.videoStartTime
+		}).then((response) => {
+			self.addRecording(response.data.Video);
+		}, () => {
+			console.log("error");
+		});
 	}
 
 	addRecording(blobUrl) {
