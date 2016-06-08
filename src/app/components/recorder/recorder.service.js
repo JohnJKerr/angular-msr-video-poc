@@ -8,7 +8,7 @@ export default class RecorderService {
 		this.recordings = [];
     this.recorder = null;
 		this.videoStartTime = Date.now();
-		this.videoSegmentIndex = 0;
+		this.videoSegmentIndex = 10;
   }
 
   init(stream) {
@@ -24,12 +24,12 @@ export default class RecorderService {
 			}
 			
 			recorder.ondataavailable = (blob) => {
-				self.videoSegmentIndex += 1;
+				if(!self.saveRecording) return;
 				var formData = new FormData();
 				let filename = self.videoStartTime + '-video' + self.videoSegmentIndex +'.webm';
 				formData.append('filename', filename);
 				formData.append('video', blob);
-
+				self.videoSegmentIndex += 1;
 				self.$http({
 					method: 'POST',
 					url: 'http://localhost:59161/video',
@@ -42,27 +42,26 @@ export default class RecorderService {
 				}, () => {
 					console.log("error");
 				});
-				
 			};
 			
 			return recorder;
 		};
 
 		this.recorder = getRecorder(stream);
+		this.recorder.start(2000);
   }
 
   record() {
 		if(!this.recorder)
 			throw new Error("Recorder must be initialised using init");
-
-    this.recorder.start(2000);
+		this.saveRecording = true;    
   }
 
 	stop() {
 		if(!this.recorder)
 			throw new Error("Recorder must be recording before it can be stopped");
 
-    this.recorder.stop();
+		this.saveRecording = false;
 	}
 
 	addRecording(blobUrl) {
